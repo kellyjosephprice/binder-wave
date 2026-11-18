@@ -1,0 +1,13 @@
+{
+	"name": "binder-wave",
+	"version": "0.1.0",
+	"description": "A 16-value Solarized-structured color palette, plus Neovim, tmux, and kitty themes built from it.",
+	"main": "palette.css",
+	"style": "palette.css",
+	"files": ["palette.css", "plugins"],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/kellyjosephprice/binder-wave.git"
+	}
+}

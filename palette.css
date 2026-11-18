@@ -1,0 +1,91 @@
+/*
+ * binder-wave — a 16-value Solarized-structured palette.
+ *
+ * 8 monotone base colors (base03..base3, dark to light) plus 8 accent hues,
+ * each accent with a light-mode (faded) and dark-mode (bright) variant
+ * resolved automatically via light-dark().
+ *
+ * Scoped to :where(.app, .palette), not :root -- :where() carries zero
+ * specificity, so a consumer can apply this under whatever wrapper class
+ * it already uses (klog uses .app) without these rules ever outranking
+ * the consumer's own.
+ */
+:where(.app, .palette) {
+	color-scheme: light dark;
+
+	--base03: #252525;
+	--base02: #303030;
+	--base01: #6a6a6a;
+	--base00: #777777;
+	--base0: #909090;
+	--base1: #9e9e9e;
+	--base2: #e8e8e8;
+	--base3: #f7f7f7;
+
+	--yellow: #a4910f;
+	--orange: #c05922;
+	--red: #dc316a;
+	--magenta: #c046a7;
+	--violet: #7a68ce;
+	--blue: #288aca;
+	--cyan: #27a09f;
+	--green: #51a169;
+
+	--yellow-faded: #827200;
+	--orange-faded: #9b3b01;
+	--red-faded: #b3004e;
+	--magenta-faded: #9e2187;
+	--violet-faded: #594bad;
+	--blue-faded: #006ba2;
+	--cyan-faded: #007f7f;
+	--green-faded: #30814c;
+
+	--yellow-bright: #c7b137;
+	--orange-bright: #e5783f;
+	--red-bright: #ff5a88;
+	--magenta-bright: #e368c8;
+	--violet-bright: #9b86f0;
+	--blue-bright: #55aaec;
+	--cyan-bright: #51c1bf;
+	--green-bright: #71c288;
+
+	--bg: light-dark(var(--base3), var(--base03));
+	--bg0: light-dark(var(--base3), var(--base03));
+	--bg1: light-dark(var(--base2), var(--base02));
+	--bg2: light-dark(var(--base1), var(--base01));
+	--bg3: light-dark(var(--base0), var(--base00));
+
+	--fg: light-dark(var(--base02), var(--base2));
+	--fg0: light-dark(var(--base03), var(--base3));
+	--fg1: light-dark(var(--base02), var(--base2));
+	--fg2: light-dark(var(--base01), var(--base1));
+	--fg3: light-dark(var(--base00), var(--base0));
+
+	--link: var(--blue-dim);
+	--link-hover: var(--cyan-dim);
+	--link-glow: var(--blue-dim);
+
+	/*
+	 * 0/1 switch, not a size: every text-shadow/drop-shadow declaration
+	 * multiplies its blur radius by this instead of hardcoding it, so one
+	 * flip here turns all of them off at once. Off by default; a theme
+	 * layered on top (klog's binder-wave.css, for example) can set this
+	 * to 1 under its own selector.
+	 */
+	--glow: 0;
+
+	/*
+	 * -dim, not -bright: -bright alone is a fixed hex value, not
+	 * light-dark()-aware, so it reads fine against the dark background but
+	 * fails contrast against the light one. -dim resolves to whichever one
+	 * is actually legible against the current scheme's background.
+	 */
+	--yellow-dim: light-dark(var(--yellow-faded), var(--yellow-bright));
+	--orange-dim: light-dark(var(--orange-faded), var(--orange-bright));
+	--red-dim: light-dark(var(--red-faded), var(--red-bright));
+	--magenta-dim: light-dark(var(--magenta-faded), var(--magenta-bright));
+	--violet-dim: light-dark(var(--violet-faded), var(--violet-bright));
+	--blue-dim: light-dark(var(--blue-faded), var(--blue-bright));
+	--cyan-dim: light-dark(var(--cyan-faded), var(--cyan-bright));
+	--green-dim: light-dark(var(--green-faded), var(--green-bright));
+}
