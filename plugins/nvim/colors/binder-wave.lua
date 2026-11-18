@@ -35,14 +35,14 @@ local accents = {
 }
 
 local faded = {
-	yellow = '#827200',
+	yellow = '#665a00',
 	orange = '#9b3b01',
 	red = '#b3004e',
 	magenta = '#9e2187',
 	violet = '#594bad',
 	blue = '#006ba2',
 	cyan = '#007f7f',
-	green = '#30814c',
+	green = '#0d6735',
 }
 
 local bright = {
