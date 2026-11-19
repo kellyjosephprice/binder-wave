@@ -78,12 +78,26 @@
   }
   .caveat strong { color: var(--fg); display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
 
-  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
-  .mode-card { border: 1px solid var(--bg2); border-radius: 8px; padding: 14px; background: var(--bg1); }
-  .mode-card .swatches { display: flex; gap: 4px; margin-bottom: 10px; }
-  .mode-card .swatches span { flex: 1; height: 28px; border-radius: 4px; }
-  .mode-card .name { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
-  .mode-card .desc { font-size: 12px; color: var(--fg2); line-height: 1.5; margin: 0; }
+  .consumer { border: 1px solid var(--bg2); border-radius: 8px; padding: 16px; background: var(--bg1); margin-top: 16px; }
+  .consumer-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg3); margin: 0 0 10px; }
+  .consumer-note { font-size: 12px; color: var(--fg2); line-height: 1.5; margin: 10px 0 0; }
+
+  .lualine-row { display: flex; align-items: stretch; font-family: "CommitMono", monospace; font-size: 12px; border-radius: 4px; overflow: hidden; background: var(--bg); margin-bottom: 6px; }
+  .lualine-row:last-child { margin-bottom: 0; }
+  .lualine-mode { padding: 4px 10px; color: var(--base3); font-weight: 600; display: flex; align-items: center; }
+  .lualine-seg { padding: 4px 10px; color: var(--fg2); display: flex; align-items: center; }
+  .lualine-file { padding: 4px 10px; color: var(--fg); flex: 1; display: flex; align-items: center; }
+
+  .tmux-bar { display: flex; align-items: center; gap: 14px; font-family: "CommitMono", monospace; font-size: 12px; background: var(--bg); border-radius: 4px; padding: 4px 8px; }
+  .tmux-session { padding: 3px 8px; border-radius: 3px; font-weight: 600; }
+  .tmux-win { color: var(--fg3); }
+  .tmux-win.active { font-weight: 600; }
+  .tmux-fill { flex: 1; }
+  .tmux-clock { color: var(--fg2); }
+
+  .kitty-bar { display: flex; gap: 2px; font-family: "CommitMono", monospace; font-size: 12px; }
+  .kitty-tab { padding: 6px 14px; background: var(--bg); color: var(--fg2); border-radius: 4px 4px 0 0; }
+  .kitty-tab.active { font-weight: 600; }
 
   .field-note {
     border: 1px solid var(--bg2); border-radius: 10px; padding: 20px; background: var(--bg1); max-width: 420px;
@@ -197,8 +211,56 @@
     <p class="eyebrow mono" style="margin-top:28px;">Eight accents — bright (dark-mode) and faded (light-mode)</p>
     <div class="swatch-grid" id="grid-accent"></div>
 
-    <p class="lede" style="margin-top:28px;">For design work you rarely want sixteen at once. Pick one accent per surface and the whole thing reads as a coherent five-colour mode:</p>
-    <div class="mode-grid" id="mode-cards"></div>
+    <p class="lede" style="margin-top:28px;">For design work you rarely want sixteen at once. The proof isn't an abstract swatch grid — it's what binder-wave's own plugins already render, each leaning on exactly one accent for a reason specific to that surface:</p>
+
+    <div class="consumer">
+      <p class="consumer-label mono">lualine · vim mode color</p>
+      <div class="lualine-row">
+        <span class="lualine-mode" style="background:var(--blue-dim)">NORMAL</span>
+        <span class="lualine-seg">⎇ main</span>
+        <span class="lualine-file">palette.css</span>
+        <span class="lualine-seg">lua</span>
+        <span class="lualine-mode" style="background:var(--blue-dim)">12:4</span>
+      </div>
+      <div class="lualine-row">
+        <span class="lualine-mode" style="background:var(--green-dim)">INSERT</span>
+        <span class="lualine-seg">⎇ main</span>
+        <span class="lualine-file">palette.css</span>
+        <span class="lualine-seg">lua</span>
+        <span class="lualine-mode" style="background:var(--green-dim)">14:1</span>
+      </div>
+      <div class="lualine-row">
+        <span class="lualine-mode" style="background:var(--violet-dim)">VISUAL</span>
+        <span class="lualine-seg">⎇ main</span>
+        <span class="lualine-file">palette.css</span>
+        <span class="lualine-seg">lua</span>
+        <span class="lualine-mode" style="background:var(--violet-dim)">9:22</span>
+      </div>
+      <p class="consumer-note">The mode badge is the only accent on the line — blue for Normal, green for Insert, violet for Visual. Branch, file, and filetype stay on the same two monotones no matter which mode you're in.</p>
+    </div>
+
+    <div class="consumer">
+      <p class="consumer-label mono">tmux · active window</p>
+      <div class="tmux-bar">
+        <span class="tmux-session" style="background:var(--green-dim); color:var(--base3)">job-search</span>
+        <span class="tmux-win">1:vim</span>
+        <span class="tmux-win active" style="color:var(--green-dim)">2:shell*</span>
+        <span class="tmux-win">3:logs</span>
+        <span class="tmux-fill"></span>
+        <span class="tmux-clock">14:32</span>
+      </div>
+      <p class="consumer-note">Green marks the attached session and the active window — the one thing on the bar that has to grab your eye before you read anything else on it.</p>
+    </div>
+
+    <div class="consumer">
+      <p class="consumer-label mono">kitty · focused tab</p>
+      <div class="kitty-bar">
+        <span class="kitty-tab">nvim</span>
+        <span class="kitty-tab active" style="background:var(--blue-dim); color:var(--base3)">job-search</span>
+        <span class="kitty-tab">htop</span>
+      </div>
+      <p class="consumer-note">Blue marks the focused tab. Unfocused tabs sit on the same monotone as the bar itself — there's nothing competing with the one you're actually in.</p>
+    </div>
   </section>
 
   <section id="symmetry">
@@ -263,14 +325,6 @@ const lightContrast = [
   ['magenta', '#9e2187', 6.49], ['violet', '#594bad', 6.46], ['blue', '#006ba2', 5.41],
   ['cyan', '#007f7f', 4.51], ['green', '#0d6735', 6.52],
 ];
-const modes = [
-  { name: 'Signal', accent: 'cyan', desc: 'Status, availability, "online." Cool and quiet.' },
-  { name: 'Link', accent: 'blue', desc: 'The one accent that doubles as --link by default.' },
-  { name: 'Alert', accent: 'red', desc: 'Errors, destructive actions, anything urgent.' },
-  { name: 'Editorial', accent: 'violet', desc: 'Headings, pull quotes, byline accents.' },
-  { name: 'Archive', accent: 'yellow', desc: 'Warnings, drafts, anything not-yet-final.' },
-];
-
 function wcagBadge(r) { return r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : 'fail'; }
 
 function fillContrastTable(id, rows, bg) {
@@ -304,18 +358,6 @@ document.getElementById('grid-accent').innerHTML = accents.map(a => `
       <span class="figs">bright ${a.bright}</span>
       <span class="figs">faded ${a.faded}</span>
     </div>
-  </div>`).join('');
-
-document.getElementById('mode-cards').innerHTML = modes.map(m => `
-  <div class="mode-card">
-    <div class="swatches">
-      <span style="background:var(--base03)"></span>
-      <span style="background:var(--base01)"></span>
-      <span style="background:var(--${m.accent}-dim)"></span>
-      <span style="background:var(--base3)"></span>
-    </div>
-    <p class="name">${m.name} · ${m.accent}</p>
-    <p class="desc">${m.desc}</p>
   </div>`).join('');
 
 // Ladder: mirror pairs, dot positioned by L* on a 0-100 track
