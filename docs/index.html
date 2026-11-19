@@ -93,12 +93,12 @@
     padding: 4px 16px 4px 10px; font-weight: 600; display: flex; align-items: center;
     clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
   }
-  .tmux-win { display: flex; }
-  .tmux-win .idx, .tmux-win .name { padding: 4px 8px; color: var(--fg2); display: flex; align-items: center; }
-  .tmux-win.active {
-    background: var(--green-dim); margin: 0 2px;
+  .tmux-win {
+    display: flex; background: var(--bg1); margin: 0 2px;
     clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%);
   }
+  .tmux-win .idx, .tmux-win .name { padding: 4px 8px; color: var(--fg2); display: flex; align-items: center; }
+  .tmux-win.active { background: var(--green-dim); }
   .tmux-win.active .idx, .tmux-win.active .name { color: var(--base3); font-weight: 600; }
   .tmux-win.active .chev { width: 6px; align-self: stretch; background: var(--base3); opacity: .3; clip-path: polygon(0 0, 100% 50%, 0 100%); }
   .tmux-fill { flex: 1; }
