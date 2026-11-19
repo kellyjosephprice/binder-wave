@@ -26,7 +26,7 @@
   .mono { font-family: "CommitMono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
 
   header.hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
-  .eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg3); margin: 0 0 12px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg2); margin: 0 0 12px; }
   h1 { font-size: 42px; line-height: 1.05; margin: 0 0 8px; letter-spacing: -0.01em; }
   .subtitle { font-size: 17px; color: var(--fg2); margin: 0 0 16px; }
   .intro { font-size: 15px; line-height: 1.6; color: var(--fg1); max-width: 56ch; }
@@ -54,14 +54,14 @@
 
   section { margin-bottom: 64px; }
   .section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
-  .section-num { font-size: 13px; color: var(--fg3); }
+  .section-num { font-size: 13px; color: var(--fg2); }
   h2 { font-size: 22px; margin: 0; }
   .lede { font-size: 15px; line-height: 1.65; color: var(--fg1); max-width: 62ch; margin-bottom: 24px; }
 
   table.contrast { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
-  table.contrast caption { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg3); margin-bottom: 8px; }
+  table.contrast caption { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg2); margin-bottom: 8px; }
   table.contrast th, table.contrast td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--bg1); }
-  table.contrast th { color: var(--fg3); font-weight: 500; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+  table.contrast th { color: var(--fg2); font-weight: 500; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
   table.contrast td.swatch { width: 18px; }
   table.contrast td.swatch span { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
   table.contrast td.ratio { font-family: "CommitMono", monospace; }
@@ -79,8 +79,8 @@
   .caveat strong { color: var(--fg); display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
 
   .consumer { border: 1px solid var(--bg2); border-radius: 8px; padding: 16px; background: var(--bg1); margin-top: 16px; }
-  .consumer-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg3); margin: 0 0 10px; }
-  .consumer-note { font-size: 12px; color: var(--fg2); line-height: 1.5; margin: 10px 0 0; }
+  .consumer-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg1); margin: 0 0 10px; }
+  .consumer-note { font-size: 12px; color: var(--fg1); line-height: 1.5; margin: 10px 0 0; }
 
   .lualine-row { display: flex; align-items: stretch; font-family: "CommitMono", monospace; font-size: 12px; border-radius: 4px; overflow: hidden; background: var(--bg); margin-bottom: 6px; }
   .lualine-row:last-child { margin-bottom: 0; }
@@ -88,12 +88,13 @@
   .lualine-seg { padding: 4px 10px; color: var(--fg2); display: flex; align-items: center; }
   .lualine-file { padding: 4px 10px; color: var(--fg); flex: 1; display: flex; align-items: center; }
 
-  .tmux-bar { display: flex; align-items: center; gap: 14px; font-family: "CommitMono", monospace; font-size: 12px; background: var(--bg); border-radius: 4px; padding: 4px 8px; }
-  .tmux-session { padding: 3px 8px; border-radius: 3px; font-weight: 600; }
-  .tmux-win { color: var(--fg3); }
-  .tmux-win.active { font-weight: 600; }
+  .tmux-bar { display: flex; align-items: stretch; font-family: "CommitMono", monospace; font-size: 12px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+  .tmux-session { padding: 4px 10px; font-weight: 600; display: flex; align-items: center; }
+  .tmux-win { display: flex; }
+  .tmux-win .idx, .tmux-win .name { padding: 4px 8px; color: var(--fg2); display: flex; align-items: center; }
+  .tmux-win.active .idx, .tmux-win.active .name { background: var(--green-dim); color: var(--base3); font-weight: 600; }
   .tmux-fill { flex: 1; }
-  .tmux-clock { color: var(--fg2); }
+  .tmux-clock { padding: 4px 10px; color: var(--fg2); display: flex; align-items: center; }
 
   .kitty-bar { display: flex; gap: 2px; font-family: "CommitMono", monospace; font-size: 12px; }
   .kitty-tab { padding: 6px 14px; background: var(--bg); color: var(--fg2); border-radius: 4px 4px 0 0; }
@@ -104,7 +105,7 @@
   }
   .field-note .kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan-dim); margin: 0 0 8px; }
   .field-note h3 { font-size: 17px; margin: 0 0 6px; }
-  .field-note .byline { font-size: 11px; color: var(--fg3); margin: 0 0 12px; }
+  .field-note .byline { font-size: 11px; color: var(--fg1); margin: 0 0 12px; }
   .field-note p { font-size: 13px; line-height: 1.6; color: var(--fg1); margin: 0 0 10px; }
   .field-note a { color: var(--link); }
   .field-note .tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--magenta-dim); color: var(--base3); margin-right: 6px; }
@@ -116,11 +117,11 @@
   .swatch-tile .chip.split span { flex: 1; }
   .swatch-tile .label { padding: 8px 10px; font-size: 11px; }
   .swatch-tile .label .name { font-weight: 600; display: block; margin-bottom: 2px; }
-  .swatch-tile .label .figs { display: block; color: var(--fg3); font-family: "CommitMono", monospace; font-size: 10px; }
+  .swatch-tile .label .figs { display: block; color: var(--fg2); font-family: "CommitMono", monospace; font-size: 10px; }
 
   .ladder { display: flex; flex-direction: column; gap: 6px; margin: 20px 0; }
   .ladder-row { display: grid; grid-template-columns: 70px 1fr 70px; align-items: center; gap: 10px; font-size: 12px; }
-  .ladder-row .label { text-align: right; color: var(--fg3); font-family: "CommitMono", monospace; }
+  .ladder-row .label { text-align: right; color: var(--fg2); font-family: "CommitMono", monospace; }
   .ladder-row .label.right { text-align: left; }
   .ladder-track { position: relative; height: 10px; background: var(--bg1); border-radius: 5px; }
   .ladder-dot { position: absolute; top: -3px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--bg); transform: translateX(-50%); }
@@ -135,7 +136,7 @@
   }
   .app[style*="color-scheme: light"] pre.code { background: var(--base02); }
 
-  footer { font-size: 12px; color: var(--fg3); border-top: 1px solid var(--bg1); padding-top: 20px; }
+  footer { font-size: 12px; color: var(--fg2); border-top: 1px solid var(--bg1); padding-top: 20px; }
   footer a { color: var(--blue-dim); }
 </style>
 </head>
@@ -243,9 +244,9 @@
       <p class="consumer-label mono">tmux · active window</p>
       <div class="tmux-bar">
         <span class="tmux-session" style="background:var(--green-dim); color:var(--base3)">job-search</span>
-        <span class="tmux-win">1:vim</span>
-        <span class="tmux-win active" style="color:var(--green-dim)">2:shell*</span>
-        <span class="tmux-win">3:logs</span>
+        <span class="tmux-win"><span class="idx">1</span><span class="name">vim</span></span>
+        <span class="tmux-win active"><span class="idx">2</span><span class="name">shell</span></span>
+        <span class="tmux-win"><span class="idx">3</span><span class="name">logs</span></span>
         <span class="tmux-fill"></span>
         <span class="tmux-clock">14:32</span>
       </div>
@@ -333,7 +334,7 @@ function fillContrastTable(id, rows, bg) {
     <tr>
       <td class="swatch"><span style="background:${hex}"></span></td>
       <td>${name}</td>
-      <td class="mono" style="color:var(--fg3)">${hex}</td>
+      <td class="mono" style="color:var(--fg2)">${hex}</td>
       <td class="ratio">${ratio.toFixed(2)}:1</td>
       <td class="${ratio >= 4.5 ? 'pass' : 'fail'}">${wcagBadge(ratio)}</td>
     </tr>`).join('');
