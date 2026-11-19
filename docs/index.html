@@ -89,10 +89,18 @@
   .lualine-file { padding: 4px 10px; color: var(--fg); flex: 1; display: flex; align-items: center; }
 
   .tmux-bar { display: flex; align-items: stretch; font-family: "CommitMono", monospace; font-size: 12px; background: var(--bg); border-radius: 4px; overflow: hidden; }
-  .tmux-session { padding: 4px 10px; font-weight: 600; display: flex; align-items: center; }
+  .tmux-session {
+    padding: 4px 16px 4px 10px; font-weight: 600; display: flex; align-items: center;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  }
   .tmux-win { display: flex; }
   .tmux-win .idx, .tmux-win .name { padding: 4px 8px; color: var(--fg2); display: flex; align-items: center; }
-  .tmux-win.active .idx, .tmux-win.active .name { background: var(--green-dim); color: var(--base3); font-weight: 600; }
+  .tmux-win.active {
+    background: var(--green-dim); margin: 0 2px;
+    clip-path: polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%);
+  }
+  .tmux-win.active .idx, .tmux-win.active .name { color: var(--base3); font-weight: 600; }
+  .tmux-win.active .chev { width: 6px; align-self: stretch; background: var(--base3); opacity: .3; clip-path: polygon(0 0, 100% 50%, 0 100%); }
   .tmux-fill { flex: 1; }
   .tmux-clock { padding: 4px 10px; color: var(--fg2); display: flex; align-items: center; }
 
@@ -245,7 +253,7 @@
       <div class="tmux-bar">
         <span class="tmux-session" style="background:var(--green-dim); color:var(--base3)">job-search</span>
         <span class="tmux-win"><span class="idx">1</span><span class="name">vim</span></span>
-        <span class="tmux-win active"><span class="idx">2</span><span class="name">shell</span></span>
+        <span class="tmux-win active"><span class="idx">2</span><span class="chev"></span><span class="name">shell</span></span>
         <span class="tmux-win"><span class="idx">3</span><span class="name">logs</span></span>
         <span class="tmux-fill"></span>
         <span class="tmux-clock">14:32</span>
