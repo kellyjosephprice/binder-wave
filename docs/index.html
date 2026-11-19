@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>binder-wave</title>
+<link rel="stylesheet" href="assets/palette.css">
+<style>
+  * { box-sizing: border-box; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 0.35s; }
+  html, body {
+    margin: 0;
+    background: #1b1b1b;
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .app {
+    max-width: 880px; margin: 0 auto; padding: 48px 24px 96px;
+    color: var(--fg); min-height: 100vh;
+    background-color: var(--bg);
+    background-image:
+      linear-gradient(to right, color-mix(in srgb, var(--fg) 6%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in srgb, var(--fg) 6%, transparent) 1px, transparent 1px);
+    background-size: 80px 80px;
+  }
+  .mono { font-family: "CommitMono", ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+
+  header.hero { display: flex; justify-content: space-between; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
+  .eyebrow { font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg3); margin: 0 0 12px; }
+  h1 { font-size: 42px; line-height: 1.05; margin: 0 0 8px; letter-spacing: -0.01em; }
+  .subtitle { font-size: 17px; color: var(--fg2); margin: 0 0 16px; }
+  .intro { font-size: 15px; line-height: 1.6; color: var(--fg1); max-width: 56ch; }
+
+  .toggle {
+    display: flex; gap: 2px; border: 1px solid var(--bg2); border-radius: 6px; overflow: hidden; flex-shrink: 0;
+    position: fixed; top: 16px; right: 16px; z-index: 50; background: var(--bg);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  }
+  .toggle button {
+    font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+    border: none; background: transparent; color: var(--fg2); padding: 8px 14px; cursor: pointer;
+  }
+  .toggle button[aria-pressed="true"] { background: var(--violet-dim); color: var(--base3); }
+
+  .source {
+    display: flex; gap: 20px; align-items: flex-start;
+    border: 1px solid var(--bg2); border-radius: 10px; padding: 20px;
+    margin-bottom: 56px; background: var(--bg1);
+  }
+  .source img { width: 96px; height: 96px; object-fit: cover; border-radius: 6px; flex-shrink: 0; }
+  .source p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--fg1); }
+  .source p + p { margin-top: 10px; }
+  .source a { color: var(--blue-dim); }
+
+  section { margin-bottom: 64px; }
+  .section-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 16px; }
+  .section-num { font-size: 13px; color: var(--fg3); }
+  h2 { font-size: 22px; margin: 0; }
+  .lede { font-size: 15px; line-height: 1.65; color: var(--fg1); max-width: 62ch; margin-bottom: 24px; }
+
+  table.contrast { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
+  table.contrast caption { text-align: left; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg3); margin-bottom: 8px; }
+  table.contrast th, table.contrast td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--bg1); }
+  table.contrast th { color: var(--fg3); font-weight: 500; font-size: 11px; letter-spacing: 0.04em; text-transform: uppercase; }
+  table.contrast td.swatch { width: 18px; }
+  table.contrast td.swatch span { display: inline-block; width: 14px; height: 14px; border-radius: 3px; }
+  table.contrast td.ratio { font-family: "CommitMono", monospace; }
+  table.contrast td.pass { color: var(--green-dim); }
+  table.contrast td.fail { color: var(--red-dim); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 640px) { .two-col { grid-template-columns: 1fr; } }
+
+  .caveat {
+    border-left: 3px solid var(--yellow-dim); background: var(--bg1);
+    padding: 14px 16px; font-size: 13px; line-height: 1.6; color: var(--fg1);
+    margin-top: 8px; border-radius: 0 6px 6px 0;
+  }
+  .caveat strong { color: var(--fg); display: block; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+
+  .mode-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
+  .mode-card { border: 1px solid var(--bg2); border-radius: 8px; padding: 14px; background: var(--bg1); }
+  .mode-card .swatches { display: flex; gap: 4px; margin-bottom: 10px; }
+  .mode-card .swatches span { flex: 1; height: 28px; border-radius: 4px; }
+  .mode-card .name { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .mode-card .desc { font-size: 12px; color: var(--fg2); line-height: 1.5; margin: 0; }
+
+  .field-note {
+    border: 1px solid var(--bg2); border-radius: 10px; padding: 20px; background: var(--bg1); max-width: 420px;
+  }
+  .field-note .kicker { font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cyan-dim); margin: 0 0 8px; }
+  .field-note h3 { font-size: 17px; margin: 0 0 6px; }
+  .field-note .byline { font-size: 11px; color: var(--fg3); margin: 0 0 12px; }
+  .field-note p { font-size: 13px; line-height: 1.6; color: var(--fg1); margin: 0 0 10px; }
+  .field-note a { color: var(--link); }
+  .field-note .tag { display: inline-block; font-size: 10px; padding: 2px 8px; border-radius: 10px; background: var(--magenta-dim); color: var(--base3); margin-right: 6px; }
+
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 10px; }
+  .swatch-tile { border: 1px solid var(--bg2); border-radius: 8px; overflow: hidden; }
+  .swatch-tile .chip { height: 56px; }
+  .swatch-tile .chip.split { display: flex; }
+  .swatch-tile .chip.split span { flex: 1; }
+  .swatch-tile .label { padding: 8px 10px; font-size: 11px; }
+  .swatch-tile .label .name { font-weight: 600; display: block; margin-bottom: 2px; }
+  .swatch-tile .label .figs { display: block; color: var(--fg3); font-family: "CommitMono", monospace; font-size: 10px; }
+
+  .ladder { display: flex; flex-direction: column; gap: 6px; margin: 20px 0; }
+  .ladder-row { display: grid; grid-template-columns: 70px 1fr 70px; align-items: center; gap: 10px; font-size: 12px; }
+  .ladder-row .label { text-align: right; color: var(--fg3); font-family: "CommitMono", monospace; }
+  .ladder-row .label.right { text-align: left; }
+  .ladder-track { position: relative; height: 10px; background: var(--bg1); border-radius: 5px; }
+  .ladder-dot { position: absolute; top: -3px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--bg); transform: translateX(-50%); }
+
+  .hue-wheel-wrap { display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; }
+  .legend { font-size: 12px; color: var(--fg1); line-height: 1.8; }
+  .legend .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+
+  pre.code {
+    background: var(--base03); color: var(--base2); border-radius: 8px; padding: 18px 20px;
+    font-size: 12.5px; line-height: 1.6; overflow-x: auto; font-family: "CommitMono", monospace;
+  }
+  .app[style*="color-scheme: light"] pre.code { background: var(--base02); }
+
+  footer { font-size: 12px; color: var(--fg3); border-top: 1px solid var(--bg1); padding-top: 20px; }
+  footer a { color: var(--blue-dim); }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="hero">
+    <div>
+      <p class="eyebrow mono">Colour system / 16 values / derived 2026</p>
+      <h1>binder-wave</h1>
+      <p class="subtitle">A Solarized-structured palette, measured off the Trapper Keeper Binder, Shapes cover.</p>
+      <p class="intro">binder-wave is eight monotones and eight accent hues, each accent carrying a light-mode and dark-mode variant tuned to hit WCAG AA against its own background. Everything below is the actual shipped <span class="mono">palette.css</span>, not a mockup.</p>
+    </div>
+    <div class="toggle" role="group" aria-label="colour scheme">
+      <button type="button" id="btn-dark" aria-pressed="true">Dark</button>
+      <button type="button" id="btn-light" aria-pressed="false">Light</button>
+    </div>
+  </header>
+
+  <div class="source">
+    <img src="assets/trapper-keeper-cover.jpg" alt="Mead Trapper Keeper, Shapes cover, Accobrands 456764" width="96" height="96">
+    <div>
+      <p><strong>Source.</strong> Mead "Trapper Keeper / Shapes," Accobrands 456764. We sampled every pixel of the cover in CIELAB space and clustered by hue. The photo is almost entirely cool — <strong>98.4%</strong> of its chromatic pixels sit between 147° and 357° (blue through violet through magenta), with only a thin 0.2% sliver near 100–130° and scattered fractions elsewhere.</p>
+      <p>Blue (ΔE76 1.2 from the nearest real pixel) is a near-exact lift from the photo. Green and cyan (ΔE76 8.1 and 8.5) are close kin to real foliage-green patches. Yellow, orange, red, magenta, and violet (ΔE76 14.6–25.4) are <em>not</em> direct samples — the cover has almost no warm content to sample from. Those five hues complete an evenly-spaced wheel at the same lightness and chroma as the two measured hues, rather than being lifted pixel-for-pixel.</p>
+    </div>
+  </div>
+
+  <section id="contrast">
+    <div class="section-head"><span class="section-num mono">01</span><h2>Selective contrast</h2></div>
+    <p class="lede">Hold lightness still within each mode, let hue do the distinguishing — then check the actual numbers. Every accent below ships as two hexes: a <span class="mono">-faded</span> value for light backgrounds and a <span class="mono">-bright</span> value for dark ones, picked automatically by <span class="mono">light-dark()</span>.</p>
+    <div class="two-col">
+      <div>
+        <table class="contrast">
+          <caption>On base03 (#252525) — dark mode</caption>
+          <thead><tr><th></th><th>Accent</th><th>Hex</th><th>Ratio</th><th>WCAG</th></tr></thead>
+          <tbody id="tbl-dark"></tbody>
+        </table>
+      </div>
+      <div>
+        <table class="contrast">
+          <caption>On base3 (#F7F7F7) — light mode</caption>
+          <thead><tr><th></th><th>Accent</th><th>Hex</th><th>Ratio</th><th>WCAG</th></tr></thead>
+          <tbody id="tbl-light"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="caveat">
+      <strong>One caveat worth knowing</strong>
+      All sixteen pairings clear 4.5:1 (AA) for normal text. Cyan-faded is the one worth watching: it clears AA at 4.51:1, but with less margin than the rest — fine for body text, but don't stack a second source of low contrast on top of it (a lighter weight, a semi-transparent background) without rechecking.
+    </div>
+  </section>
+
+  <section id="mirror">
+    <div class="section-head"><span class="section-num mono">02</span><h2>Both sides of the force</h2></div>
+    <p class="lede">One palette, not two. The eight accent <em>hues</em> and their locked chroma stay identical between light and dark — only the monotones invert (base03⇄base3, base02⇄base2, and so on) and each accent swaps to its paired lightness via <span class="mono">light-dark()</span>. There's no separate "light mode palette" to maintain or drift out of sync.</p>
+    <div class="field-note">
+      <p class="kicker mono">Field notes</p>
+      <span class="tag">design</span>
+      <h3>The grid was always the point</h3>
+      <p class="byline">24 August 2026 · 6 min</p>
+      <p>A demo post, themed live by the toggle above. Swap it and watch the monotones flip while the accent hues — this link, this tag, this byline colour — hold still. That's the whole bet: one set of hue decisions, two sets of lightness.</p>
+      <p><a href="#">Read the rest →</a></p>
+    </div>
+  </section>
+
+  <section id="sixteen-five">
+    <div class="section-head"><span class="section-num mono">03</span><h2>16 / 5 palette modes</h2></div>
+    <p class="lede">Sixteen values when you want them: eight monotones, eight accents. Five when you need restraint: four monotones plus one accent, which is how most of binder-wave's own plugins (tmux, kitty, lualine) actually use it.</p>
+
+    <p class="eyebrow mono" style="margin-top:28px;">Eight monotones</p>
+    <div class="swatch-grid" id="grid-monotone"></div>
+
+    <p class="eyebrow mono" style="margin-top:28px;">Eight accents — bright (dark-mode) and faded (light-mode)</p>
+    <div class="swatch-grid" id="grid-accent"></div>
+
+    <p class="lede" style="margin-top:28px;">For design work you rarely want sixteen at once. Pick one accent per surface and the whole thing reads as a coherent five-colour mode:</p>
+    <div class="mode-grid" id="mode-cards"></div>
+  </section>
+
+  <section id="symmetry">
+    <div class="section-head"><span class="section-num mono">04</span><h2>Precision, symmetry</h2></div>
+    <p class="lede">The eight monotones form four mirror pairs. Each pair's two lightness values are close to complementary around the midpoint — base03/base3 sit at 14.7 and 97.2 (almost a perfect L* mirror around 56), base02/base2 at 19.9 and 92.0, and so on inward. That symmetry is what lets the same accent chroma and hue work unchanged on either side.</p>
+    <div class="ladder" id="ladder"></div>
+  </section>
+
+  <section id="hue-wheel">
+    <div class="section-head"><span class="section-num mono">05</span><h2>Where each hue came from</h2></div>
+    <p class="lede">Plotting the eight accent hues against the photo's own hue histogram makes the honest version of the story visible at a glance: the palette's cool half (blue through green) sits right on top of where the photo actually has mass; the warm half (yellow through red) sits in territory the photo barely touches.</p>
+    <div class="hue-wheel-wrap">
+      <svg id="hue-svg" width="280" height="280" viewBox="0 0 280 280"></svg>
+      <div class="legend" id="hue-legend"></div>
+    </div>
+  </section>
+
+  <section id="drop-it-in">
+    <div class="section-head"><h2>Drop it in</h2></div>
+    <p class="lede">The whole thing is one stylesheet, scoped with <span class="mono">:where()</span> so it never outranks a consumer's own rules.</p>
+    <pre class="code">&lt;link rel="stylesheet" href="https://unpkg.com/binder-wave/palette.css"&gt;
+
+&lt;div class="app"&gt;
+  &lt;p style="color: var(--fg); background: var(--bg)"&gt;
+    Reads correctly in light or dark, no toggle required.
+  &lt;/p&gt;
+  &lt;a style="color: var(--link)"&gt;links use --blue-dim&lt;/a&gt;
+&lt;/div&gt;</pre>
+  </section>
+
+  <footer>
+    Cover photo © Accobrands, product 456764, used for colour reference only.
+    <a href="https://github.com/kellyjosephprice/binder-wave" target="_blank" rel="noopener">Source on GitHub</a>
+  </footer>
+
+</div>
+
+<script>
+const monotones = [
+  ['base03', '#252525', 14.7, 97.2], ['base02', '#303030', 19.9, 92.0],
+  ['base01', '#6a6a6a', 44.8, 65.1], ['base00', '#777777', 50.0, 59.8],
+  ['base0', '#909090', 59.8, 50.0], ['base1', '#9e9e9e', 65.1, 44.8],
+  ['base2', '#e8e8e8', 92.0, 19.9], ['base3', '#f7f7f7', 97.2, 14.7],
+];
+const accents = [
+  { name: 'yellow', bright: '#c7b137', faded: '#665a00', L: 72.1, C: 62.0, h: 95, dE: 14.6, sampled: false },
+  { name: 'orange', bright: '#e5783f', faded: '#9b3b01', L: 62.0, C: 62.2, h: 52, dE: 17.8, sampled: false },
+  { name: 'red', bright: '#ff5a88', faded: '#b3004e', L: 62.0, C: 66.5, h: 8, dE: 20.0, sampled: false },
+  { name: 'magenta', bright: '#e368c8', faded: '#9e2187', L: 62.0, C: 65.5, h: 335, dE: 25.4, sampled: false },
+  { name: 'violet', bright: '#9b86f0', faded: '#594bad', L: 61.9, C: 59.8, h: 302, dE: 20.2, sampled: false },
+  { name: 'blue', bright: '#55aaec', faded: '#006ba2', L: 67.1, C: 41.1, h: 262, dE: 1.2, sampled: true },
+  { name: 'cyan', bright: '#51c1bf', faded: '#007f7f', L: 72.0, C: 33.1, h: 195, dE: 8.5, sampled: true },
+  { name: 'green', bright: '#71c288', faded: '#0d6735', L: 72.1, C: 43.2, h: 150, dE: 8.1, sampled: true },
+];
+const darkContrast = [
+  ['yellow', '#c7b137', 7.13], ['orange', '#e5783f', 5.18], ['red', '#ff5a88', 5.16],
+  ['magenta', '#e368c8', 5.17], ['violet', '#9b86f0', 5.15], ['blue', '#55aaec', 6.09],
+  ['cyan', '#51c1bf', 7.10], ['green', '#71c288', 7.13],
+];
+const lightContrast = [
+  ['yellow', '#665a00', 6.47], ['orange', '#9b3b01', 6.49], ['red', '#b3004e', 6.48],
+  ['magenta', '#9e2187', 6.49], ['violet', '#594bad', 6.46], ['blue', '#006ba2', 5.41],
+  ['cyan', '#007f7f', 4.51], ['green', '#0d6735', 6.52],
+];
+const modes = [
+  { name: 'Signal', accent: 'cyan', desc: 'Status, availability, "online." Cool and quiet.' },
+  { name: 'Link', accent: 'blue', desc: 'The one accent that doubles as --link by default.' },
+  { name: 'Alert', accent: 'red', desc: 'Errors, destructive actions, anything urgent.' },
+  { name: 'Editorial', accent: 'violet', desc: 'Headings, pull quotes, byline accents.' },
+  { name: 'Archive', accent: 'yellow', desc: 'Warnings, drafts, anything not-yet-final.' },
+];
+
+function wcagBadge(r) { return r >= 7 ? 'AAA' : r >= 4.5 ? 'AA' : 'fail'; }
+
+function fillContrastTable(id, rows, bg) {
+  const tbody = document.getElementById(id);
+  tbody.innerHTML = rows.map(([name, hex, ratio]) => `
+    <tr>
+      <td class="swatch"><span style="background:${hex}"></span></td>
+      <td>${name}</td>
+      <td class="mono" style="color:var(--fg3)">${hex}</td>
+      <td class="ratio">${ratio.toFixed(2)}:1</td>
+      <td class="${ratio >= 4.5 ? 'pass' : 'fail'}">${wcagBadge(ratio)}</td>
+    </tr>`).join('');
+}
+fillContrastTable('tbl-dark', darkContrast);
+fillContrastTable('tbl-light', lightContrast);
+
+document.getElementById('grid-monotone').innerHTML = monotones.map(([name, hex, L]) => `
+  <div class="swatch-tile">
+    <div class="chip" style="background:${hex}"></div>
+    <div class="label"><span class="name">${name}</span><span class="figs">${hex} · L=${L.toFixed(1)}</span></div>
+  </div>`).join('');
+
+document.getElementById('grid-accent').innerHTML = accents.map(a => `
+  <div class="swatch-tile">
+    <div class="chip split">
+      <span style="background:${a.bright}"></span>
+      <span style="background:${a.faded}"></span>
+    </div>
+    <div class="label">
+      <span class="name">${a.name}</span>
+      <span class="figs">bright ${a.bright}</span>
+      <span class="figs">faded ${a.faded}</span>
+    </div>
+  </div>`).join('');
+
+document.getElementById('mode-cards').innerHTML = modes.map(m => `
+  <div class="mode-card">
+    <div class="swatches">
+      <span style="background:var(--base03)"></span>
+      <span style="background:var(--base01)"></span>
+      <span style="background:var(--${m.accent}-dim)"></span>
+      <span style="background:var(--base3)"></span>
+    </div>
+    <p class="name">${m.name} · ${m.accent}</p>
+    <p class="desc">${m.desc}</p>
+  </div>`).join('');
+
+// Ladder: mirror pairs, dot positioned by L* on a 0-100 track
+const pairs = [[monotones[0], monotones[7]], [monotones[1], monotones[6]], [monotones[2], monotones[5]], [monotones[3], monotones[4]]];
+document.getElementById('ladder').innerHTML = pairs.map(([a, b]) => `
+  <div class="ladder-row">
+    <span class="label mono">${a[0]} ${a[2].toFixed(1)}</span>
+    <div class="ladder-track">
+      <div class="ladder-dot" style="left:${a[2]}%; background:${a[1]}"></div>
+      <div class="ladder-dot" style="left:${b[2]}%; background:${b[1]}"></div>
+    </div>
+    <span class="label right mono">${b[2].toFixed(1)} ${b[0]}</span>
+  </div>`).join('');
+
+// Hue wheel: photo hue histogram (approximate, from the real buckets) + accent positions
+const photoHist = [
+  [275,56.9],[285,14.8],[265,9.9],[295,4.5],[255,2.8],[305,1.5],[245,1.2],[355,1.0],
+  [315,0.7],[235,0.7],[345,0.7],[335,0.7],[5,0.6],[205,0.6],[195,0.6],[225,0.5],[325,0.5],[215,0.5],
+];
+const cx = 140, cy = 140, rMax = 110;
+let svg = '';
+// background rings
+for (let r = 30; r <= rMax; r += 30) svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="var(--bg2)" stroke-width="1"/>`;
+// photo histogram as radial bars from center, length by % mass
+for (const [h, pct] of photoHist) {
+  const rad = h * Math.PI / 180;
+  const len = 20 + pct * 1.4;
+  const x2 = cx + len * Math.cos(rad), y2 = cy - len * Math.sin(rad);
+  svg += `<line x1="${cx}" y1="${cy}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}" stroke="var(--fg3)" stroke-width="2" opacity="0.4"/>`;
+}
+// accent hue markers at fixed radius, colored, filled if "sampled"
+for (const a of accents) {
+  const rad = a.h * Math.PI / 180;
+  const x = cx + rMax * 0.85 * Math.cos(rad), y = cy - rMax * 0.85 * Math.sin(rad);
+  svg += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="8" fill="${a.bright}" stroke="${a.sampled ? 'var(--green-dim)' : 'var(--base3)'}" stroke-width="2"/>`;
+}
+document.getElementById('hue-svg').innerHTML = svg;
+document.getElementById('hue-legend').innerHTML = `
+  <div><span class="dot" style="background:var(--fg3); opacity:0.5"></span>radial bars: photo's real hue mass (98.4% between 147–357°)</div>
+  <div style="margin-top:6px"><span class="dot" style="border:2px solid var(--green-dim); background:transparent"></span>accent, directly sampled from photo (blue, cyan, green)</div>
+  <div><span class="dot" style="border:2px solid var(--base3); background:transparent"></span>accent, designed to complete the wheel (yellow, orange, red, magenta, violet)</div>
+` + accents.map(a => `<div style="margin-top:4px"><span class="dot" style="background:${a.bright}"></span>${a.name} · h=${a.h}° · ΔE76 ${a.dE}</div>`).join('');
+
+// Theme toggle
+const btnDark = document.getElementById('btn-dark'), btnLight = document.getElementById('btn-light');
+const appEl = document.querySelector('.app');
+function applyScheme(scheme) {
+  // palette.css sets color-scheme: light dark directly on .app, and a
+  // directly-specified value always wins over an inherited one -- so the
+  // override has to land on that same element.
+  appEl.style.colorScheme = scheme;
+  btnDark.setAttribute('aria-pressed', String(scheme === 'dark'));
+  btnLight.setAttribute('aria-pressed', String(scheme === 'light'));
+}
+function setScheme(scheme) {
+  if (document.startViewTransition) {
+    document.startViewTransition(() => applyScheme(scheme));
+  } else {
+    applyScheme(scheme);
+  }
+}
+btnDark.addEventListener('click', () => setScheme('dark'));
+btnLight.addEventListener('click', () => setScheme('light'));
+setScheme('dark');
+</script>
+</body>
+</html>
